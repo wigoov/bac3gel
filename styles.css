@@ -1,0 +1,37 @@
+/* Navigation Design */
+.nav-link,
+.link-hover {
+    transition-duration: .15s;
+    transition-property: background;
+    transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+    background-image: linear-gradient(transparent 50%, var(--soft-sage) 0);
+    background-size: auto 210%;
+}
+
+.nav-link.w--current,
+.nav-link:hover,
+.link-hover:hover {
+    background-position: 0 100%;
+}
+
+/* Accordion */
+.accordion:last-child {
+    border-bottom: 1px solid;
+}
+
+.accordion-title-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+.accordion-foot {
+    interpolate-size: allow-keywords;
+    transition: height 0.3s ease-in-out;
+}
+
+.accordion.is-active .accordion-title-icon {
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+.accordion.is-active .accordion-foot {
+    height: auto;
+}
