@@ -1,0 +1,27 @@
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<script>
+    function updateHeaderHeight() {
+        const headerHeightCSS = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
+        return parseFloat(headerHeightCSS);
+    }
+
+    function wrapWordsInSpan(element, chars = false) {
+        const text = element.textContent;
+
+        element.innerHTML = text
+            .split(' ')
+            .map(word => {
+                if (chars) {
+                    // Split each word into characters and wrap each one in a <span>
+                    return `<span class="word">${word.split('').map(char => `<span class="char">${char}</span>`).join('')}</span>`;
+                } else {
+                    // Just wrap the word in a <span>
+                    return `<span class="word"><span>${word}</span></span>`;
+                }
+            })
+            .join(' ');
+    }
+</script>
