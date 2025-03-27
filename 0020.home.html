@@ -1,13 +1,35 @@
 <script id="elaltillo-home-script" type="text/javascript">
-    function initializeAnimations() {
-        let typeSplit = new SplitType(".splited-text", {
-            types: "words, chars",
-            tagName: "span",
-        });
+    gsap.registerPlugin(ScrollTrigger);
 
-        let elements = gsap.utils.toArray(".is--animated_text");
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    function raf(time) {
+        lenis.raf(time);
+        ScrollTrigger.update();
+        requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+    function initializeAnimations() {
+        const elements = document.querySelectorAll('.splited-text');
+
+        if (elements.length <= 0) return;
 
         elements.forEach((element) => {
+            wrapWordsInSpan(element, true);
+
             let clonedElement = element.cloneNode(true);
             clonedElement.style.opacity = "0.25";
             clonedElement.style.position = "absolute";
