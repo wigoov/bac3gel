@@ -1,0 +1,100 @@
+<script id="elaltillo-home-script" type="text/javascript">
+    function initializeAnimations() {
+        let typeSplit = new SplitType(".splited-text", {
+            types: "words, chars",
+            tagName: "span",
+        });
+
+        let elements = gsap.utils.toArray(".is--animated_text");
+
+        elements.forEach((element) => {
+            let clonedElement = element.cloneNode(true);
+            clonedElement.style.opacity = "0.25";
+            clonedElement.style.position = "absolute";
+            clonedElement.style.top = "0";
+            clonedElement.style.left = "0";
+
+            element.parentNode.appendChild(clonedElement);
+            element.parentNode.style.position = "relative";
+
+            let timeline_1 = gsap.timeline({
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 90%",
+                    end: "+=75%",
+                    scrub: 2,
+                    // markers: true,
+                },
+            });
+
+            timeline_1.from(element.querySelectorAll(".char"), {
+                opacity: 0.01,
+                scale: 1.35,
+                ease: "back.out(2)",
+                stagger: { amount: 10, from: "start" },
+            });
+        });
+    }
+
+    initializeAnimations();
+
+    function initializeAnimationsGSAP2() {
+        let elements = gsap.utils.toArray("[data-gsap-fade-slide-dir]");
+
+        elements.forEach((element) => {
+            let direction = element.getAttribute("data-gsap-fade-slide-dir");
+            let xValue = "0%", yValue = "0%"; // Valores por defecto
+
+            // Configurar desplazamiento según la dirección
+            switch (direction) {
+                case "left":
+                    xValue = "-100%";
+                    break;
+                case "right":
+                    xValue = "100%";
+                    break;
+                case "top":
+                    yValue = "-100%";
+                    break;
+                case "bottom":
+                    yValue = "100%";
+                    break;
+            }
+
+            gsap.fromTo(
+                element,
+                { x: xValue, y: yValue, opacity: 0.2 }, // Inicio con desplazamiento y baja opacidad
+                {
+                    x: "0%",
+                    y: "0%",
+                    opacity: 1, // Termina en posición normal y visible
+                    duration: 1.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: element,
+                        start: "top 90%",
+                        end: "top 50%",
+                        scrub: 2,
+                        // markers: true, // Activa los markers para ajustar la animación
+                    },
+                }
+            );
+        });
+
+        // Ocultar "Div Block 13" si el usuario retrocede en el scroll
+        let hideTarget = document.querySelector(".Div-Block-13");
+
+        if (hideTarget) {
+            ScrollTrigger.create({
+                trigger: hideTarget,
+                start: "top 90%",
+                end: "top 20%",
+                onEnterBack: () => gsap.to(hideTarget, { opacity: 0, duration: 0.5 }),
+                onLeave: () => gsap.to(hideTarget, { opacity: 1, duration: 0.5 }),
+                // markers: true, // Para visualizar los puntos de activación
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", initializeAnimationsGSAP2);
+</script>
