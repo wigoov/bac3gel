@@ -1,0 +1,55 @@
+<style>
+    .header-dropdown {
+        display: grid;
+        grid-template-rows: minmax(0, 0fr);
+        grid-template-columns: 1fr;
+        transition: grid-template-rows 150ms ease-in-out, margin-bottom 150ms ease-in-out;
+        overflow: hidden;
+    }
+
+    .header-dropdown.open {
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .link-arrow-dropdown .link-arrow-decor {
+        transition: transform 300ms ease-in-out;
+    }
+
+    .link-arrow-dropdown.open .link-arrow-decor {
+        transform: scale(-1);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const triggers = document.querySelectorAll("[data-dropdown-open]");
+
+        if (!triggers.length) return; // Avoid errors if there are no triggers
+
+        triggers.forEach(trigger => {
+            const dropdownId = trigger.getAttribute("data-dropdown-open");
+            if (!dropdownId) return; // Avoid errors if no ID is specified
+
+            const dropdown = document.querySelector(dropdownId);
+            if (!dropdown) return; // Avoid errors if the dropdown does not exist in the DOM
+
+            const openDropdown = () => {
+                trigger.classList.add("open");
+                dropdown.classList.add("open");
+            };
+
+            const closeDropdown = () => {
+                if (!trigger.matches(":hover") && !dropdown.matches(":hover")) {
+                    trigger.classList.remove("open");
+                    dropdown.classList.remove("open");
+                }
+            };
+
+            trigger.addEventListener("mouseenter", openDropdown);
+            dropdown.addEventListener("mouseenter", openDropdown);
+
+            trigger.addEventListener("mouseleave", closeDropdown);
+            dropdown.addEventListener("mouseleave", closeDropdown);
+        });
+    });
+</script>

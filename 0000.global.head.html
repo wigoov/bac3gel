@@ -1,0 +1,79 @@
+<style>
+    /* Variables */
+    :root {
+        /* Colores de los botones (book a call, cart, etc) */
+        --btn-primary-bg: #202938;
+        --btn-primary-text: #f2f0e2;
+        --btn-primary-border: #f2f0e2;
+        --btn-primary-hover-bg: #f2f0e2;
+        --btn-primary-hover-text: #202938;
+        --btn-primary-hover-border: #202938;
+
+        /* Colores del Bac3Gel del footer */
+        --b3g-bg: #202938;
+        --b3g-text: #f2f0e2;
+
+        /* Iconos sociales del footer */
+        --social-icon-bg: #202938;
+        --social-icon-text: #f2f0e2;
+        --social-icon-hover-bg: #f2f0e2;
+        --social-icon-hover-text: #202938;
+
+        /* Color de los blur shapes */
+        --bgc-cbackground-top-left: var(--calm-aqua);
+        --bgc-cbackground-top-right: var(--calm-aqua);
+        --bgc-cbackground-bottom-left: var(--calm-aqua);
+        --bgc-cbackground-bottom-right: var(--calm-aqua);
+        --bgc-cbackground-center: var(--calm-aqua);
+    }
+
+    /* Global */
+    .min-dvh-minus-header-h {
+        min-height: calc(100dvh - var(--header-height));
+    }
+
+    strong {
+        font-weight: 500 !important;
+    }
+
+    .m-0-all * {
+        margin: 0 !important;
+    }
+
+    /* Accordion */
+    .accordion-content {
+        display: grid;
+        grid-template-rows: minmax(0, 0fr);
+        transition: grid-template-rows 200ms ease-in-out;
+    }
+
+    .accordion-icon {
+        transform: none;
+        transition: transform 200ms ease-in-out;
+    }
+
+    .accordion-item.open .accordion-content {
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    .accordion-item.open .accordion-icon {
+        transform: scale(-1);
+    }
+
+    /* Menu Dropdown */
+    #dropdown-header-products-menu {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.3s ease-in-out;
+        overflow: hidden;
+    }
+
+    #dropdown-header-products:hover #dropdown-header-products-button {
+        border-color: inherit !important;
+    }
+
+    #dropdown-header-products:hover #dropdown-header-products-menu {
+        grid-template-rows: 1fr;
+    }
+</style>

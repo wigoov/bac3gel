@@ -1,0 +1,34 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const teamSlide = document.querySelector(".team-slide");
+        const teamWrapper = document.querySelector(".team-wrapper");
+
+        if (!teamSlide || !teamWrapper) {
+            console.error("Element .team-slide or .team-wrapper not found.");
+            return;
+        }
+
+        function getScrollAmount() {
+            let teamSlideWidth = teamSlide.scrollWidth; // Total content width
+            let teamWrapperWidth = teamWrapper.clientWidth; // Container width
+            return -(teamSlideWidth - teamWrapperWidth + (2 * 16)); // 16px is the padding
+        }
+
+        const tween = gsap.to(teamSlide, {
+            x: getScrollAmount, // We do not use a function here, just the direct value
+            duration: 3,
+            ease: "none",
+        });
+
+        ScrollTrigger.create({
+            trigger: ".team-wrapper",
+            start: "top 25%",
+            end: () => `+=${getScrollAmount() * -1}`, // Ensure it's positive
+            pin: true,
+            animation: tween,
+            scrub: 1,
+            invalidateOnRefresh: true,
+            markers: true
+        });
+    });
+</script>

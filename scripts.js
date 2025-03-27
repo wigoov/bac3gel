@@ -52,11 +52,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		constructor(
 			selector,
 			headSelector = ".accordion-head-inner",
-			allowMultiple = false
+			allowMultiple = false,
+			onOpen = null,
+			onClose = null
 		) {
 			this.accordions = document.querySelectorAll(selector);
 			this.headSelector = headSelector;
 			this.allowMultiple = allowMultiple;
+			this.onOpen = onOpen;
+			this.onClose = onClose;
+
 			if (!this.accordions.length) return;
 			this.init();
 		}
@@ -66,21 +71,32 @@ document.addEventListener("DOMContentLoaded", function () {
 				const head = accordion.querySelector(this.headSelector);
 				if (!head) return;
 				head.addEventListener("click", () =>
-					this.toggleAccordion(accordion)
+					this.toggleAccordion(accordion, this.accordions)
 				);
 			});
 		}
 
-		toggleAccordion(accordion) {
+		toggleAccordion(accordion, accordions) {
 			if (!accordion) return;
+
 			if (!this.allowMultiple) {
 				this.accordions.forEach((acc) => {
-					if (acc !== accordion) acc.classList.remove("is-active");
+					if (acc !== accordion) {
+						acc.classList.remove("is-active");
+						if (this.onClose) this.onClose(acc, accordions);
+					}
 				});
 			}
+
 			accordion.classList.toggle("is-active");
+
+			if (accordion.classList.contains("is-active")) {
+				if (this.onOpen) this.onOpen(accordion, accordions);
+			} else {
+				if (this.onClose) this.onClose(accordion, accordions);
+			}
 		}
 	}
 
-	new Accordion(".accordion", ".accordion-head-inner");
+	new Accordion(".accordion", ".accordion-head-inner", false);
 });

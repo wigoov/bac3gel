@@ -1,0 +1,84 @@
+<style>
+    :root {
+        --fade-duration: 5s;
+        --fade-ease: ease-in-out;
+    }
+
+    .cbackground-shapes,
+    .cbackground-top-left,
+    .cbackground-top-right,
+    .cbackground-bottom-left,
+    .cbackground-bottom-right,
+    .cbackground-center {
+        animation: slowRotate 10s ease-in-out infinite alternate;
+    }
+
+    .cbackground-top-left,
+    .cbackground-top-right,
+    .cbackground-bottom-left,
+    .cbackground-bottom-right,
+    .cbackground-center {
+        backdrop-filter: blur(100px);
+    }
+
+    @keyframes slowRotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(180deg);
+        }
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+<style>
+    .about-brand-container {
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        width: 100%;
+        background: #f9f9f9;
+        padding: 20px 0;
+    }
+
+    .about-brand-list {
+        display: flex;
+        gap: 20px;
+        animation: scroll 20s linear infinite;
+    }
+
+    .about-brand-item {
+        flex: 0 0 auto;
+    }
+
+    .about-brand-image {
+        max-height: 50px;
+        width: auto;
+    }
+
+    @keyframes scroll {
+        from {
+            transform: translateX(0);
+        }
+
+        to {
+            transform: translateX(-50%);
+        }
+    }
+</style>
+
+
+
+
+

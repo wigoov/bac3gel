@@ -1,0 +1,186 @@
+<script id="elaltillo-global-accordion-script" type="text/javascript">
+    document.addEventListener("DOMContentLoaded", () => {
+        const accordions = document.querySelectorAll(".accordion-item");
+
+        // Guard clause to ensure there are accordion items
+        if (!accordions.length) {
+            console.warn("No accordion items found.");
+            return;
+        }
+
+        function toggleAccordion(accordion, onlyOne = true) {
+            // Guard clause for invalid accordion element
+            if (!accordion) {
+                console.error("Invalid accordion element.");
+                return;
+            }
+
+            const isOpen = accordion.classList.contains("open");
+
+            // Only close other accordions if `onlyOne` is true
+            if (onlyOne) {
+                accordions.forEach(item => {
+                    if (item !== accordion) {
+                        item.classList.remove("open"); // Close other accordions
+                    }
+                });
+            }
+
+            // Toggle the current accordion
+            if (isOpen) {
+                accordion.classList.remove("open");
+            } else {
+                accordion.classList.add("open");
+            }
+
+            // Get the header position for the current accordion
+            const header = accordion.querySelector(".accordion-head");
+            if (header) {
+                // Update the --header-height CSS variable to match the clicked header
+                const headerHeight = header.offsetHeight;
+                document.documentElement.style.setProperty("--header-height", `${headerHeight}px`);
+
+                // Get the value of --header-height from CSS
+                const headerHeightCSS = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
+
+                // Convert the CSS value to a number
+                const headerHeightValue = parseFloat(headerHeightCSS);
+
+                // Wait for 200ms and then move the content up
+                setTimeout(() => {
+                    // Scroll the content to the top using the header height from the CSS variable
+                    window.scrollTo({
+                        top: header.getBoundingClientRect().top + window.scrollY - headerHeightValue,
+                        behavior: "smooth"
+                    });
+                }, 200);
+            }
+        }
+
+        // Attach event listeners to each accordion header
+        accordions.forEach(accordion => {
+            const head = accordion.querySelector(".accordion-head");
+
+            // Ensure the accordion header exists
+            if (!head) {
+                console.error("Accordion head not found for:", accordion);
+                return;
+            }
+
+            head.addEventListener("click", () => {
+                toggleAccordion(accordion);
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const dropdown = document.querySelector("#dropdown-header-products");
+        if (!dropdown) return;
+
+        const button = document.querySelector("#dropdown-header-products-button");
+        const menu = document.querySelector("#dropdown-header-products-menu");
+
+        if (!button || !menu) return;
+
+        dropdown.addEventListener("mouseover", function () {
+            button.classList.add("is-active");
+            menu.classList.add("is-active");
+        });
+
+        dropdown.addEventListener("mouseleave", function () {
+            button.classList.remove("is-active");
+            menu.classList.remove("is-active");
+        });
+
+        dropdown.addEventListener("click", function (event) {
+            event.preventDefault();
+            button.classList.toggle("is-active");
+            menu.classList.toggle("is-active");
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll("[data-url]");
+        if (!elements.length) return;
+
+        elements.forEach(element => {
+            let url = element.getAttribute("data-url")?.trim();
+            if (!url) return;
+
+            let urlBefore = element.getAttribute("data-url-before")?.trim();
+            urlBefore = urlBefore ? normalizePath(urlBefore) : "";
+
+            // Construct the final valid URL
+            let finalURL = new URL(urlBefore + "/" + url, window.location.origin).href;
+
+            if (!isValidURL(finalURL)) return;
+
+            const target = element.hasAttribute("data-url-target")
+                ? element.getAttribute("data-url-target").trim() || "_self"
+                : "_self";
+
+            const rel = element.hasAttribute("data-url-rel")
+                ? element.getAttribute("data-url-rel").trim() || null
+                : null;
+
+            // Make element accessible as a link
+            element.setAttribute("role", "link");
+            element.setAttribute("tabindex", "0");
+            element.setAttribute("aria-label", `Link to ${finalURL}`);
+            element.style.cursor = "pointer";
+
+            // Handle click event
+            element.addEventListener("click", () => openLink(finalURL, target, rel));
+
+            // Allow keyboard navigation (Enter key)
+            element.addEventListener("keydown", event => {
+                if (event.key === "Enter") openLink(finalURL, target, rel);
+            });
+        });
+    });
+
+    /**
+     * Normalizes a path to prevent double slashes and ensures it starts with "/".
+     * @param {string} path
+     * @returns {string}
+     */
+    function normalizePath(path) {
+        path = path.replace(/^\/+|\/+$/g, ""); // Remove leading/trailing slashes
+        return `/${path}`;
+    }
+
+    /**
+     * Validates if a string is a valid URL.
+     * @param {string} url
+     * @returns {boolean}
+     */
+    function isValidURL(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Opens a URL with the specified attributes.
+     * @param {string} url
+     * @param {string} target
+     * @param {string|null} rel
+     */
+    function openLink(url, target, rel) {
+        if (!url) return;
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = target;
+        if (rel) link.rel = rel;
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>

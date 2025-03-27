@@ -1,0 +1,135 @@
+<style>
+    :root {
+        /* Colores de los botones (book a call, cart, etc) */
+        --btn-primary-bg: #007bff;
+        --btn-primary-text: #ffffff;
+        --btn-primary-border: #0056b3;
+        --btn-primary-hover-bg: #0056b3;
+        --btn-primary-hover-text: #ffffff;
+        --btn-primary-hover-border: #003f7f;
+
+        /* Colores del Bac3Gel del footer */
+        --b3g-bg: #343a40;
+        --b3g-text: #ffffff;
+
+        /* Iconos sociales del footer */
+        --social-icon-bg: #343a40;
+        --social-icon-text: #ffffff;
+        --social-icon-hover-bg: #ffffff;
+        --social-icon-hover-text: #343a40;
+
+        /* Color de los blur shapes */
+        --bgc-cbackground-top-left: var(--calm-aqua);
+        --bgc-cbackground-top-right: var(--calm-aqua);
+        --bgc-cbackground-bottom-left: var(--calm-aqua);
+        --bgc-cbackground-bottom-right: var(--calm-aqua);
+        --bgc-cbackground-center: var(--calm-aqua);
+    }
+</style>
+
+
+<!-- Saved pending to delete check first -->
+<style>
+    :root {
+        --bgc-cbackground-top-left: var(--calm-aqua);
+        --bgc-cbackground-top-right: var(--calm-aqua);
+        --bgc-cbackground-bottom-left: var(--calm-aqua);
+        --bgc-cbackground-bottom-right: var(--calm-aqua);
+        --bgc-cbackground-center: var(--calm-aqua);
+    }
+
+    body.body-midnight {
+        --bgc-cbackground-top-left: var(--calm-aqua);
+        --bgc-cbackground-top-right: var(--calm-aqua);
+        --bgc-cbackground-bottom-left: var(--calm-aqua);
+        --bgc-cbackground-bottom-right: var(--calm-aqua);
+        --bgc-cbackground-center: var(--calm-aqua);
+    }
+
+    body.body-ivory {
+        /* esto de abajo no es valido */
+        --bgc-cbackground-top-left: var(--calm-aqua 50%);
+        --bgc-cbackground-top-left: #fff;
+        --bgc-cbackground-top-left: rgb(0, 0, 0);
+
+        --bgc-cbackground-top-right: var(--calm-aqua);
+        --bgc-cbackground-bottom-left: var(--calm-aqua);
+        --bgc-cbackground-bottom-right: var(--calm-aqua);
+        --bgc-cbackground-center: var(--calm-aqua);
+    }
+
+    .cbackground-top-left {
+        background-color: var(--bgc-cbackground-top-left);
+    }
+
+    .cbackground-top-right {
+        background-color: var(--bgc-cbackground-top-right);
+    }
+
+    .cbackground-bottom-left {
+        background-color: var(--bgc-cbackground-bottom-left);
+    }
+
+    .cbackground-bottom-right {
+        background-color: var(--bgc-cbackground-bottom-right);
+    }
+
+    .cbackground-center {
+        background-color: var(--bgc-cbackground-center);
+    }
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<script id="elaltillo-lenis-script" type="text/javascript">
+    gsap.registerPlugin(ScrollTrigger);
+
+    let lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical', // vertical, horizontal
+        gestureDirection: 'vertical', // vertical, horizontal, both
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Synchronize Lenis scrolling with GSAP's ScrollTrigger plugin
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Add Lenis's requestAnimationFrame (raf) method to GSAP's ticker
+    // This ensures Lenis's smooth scroll animation updates on each GSAP tick
+    gsap.ticker.add((time) => {
+        lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+    });
+
+    // Disable lag smoothing in GSAP to prevent any delay in scroll animations
+    gsap.ticker.lagSmoothing(0);
+</script>

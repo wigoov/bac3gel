@@ -1,0 +1,33 @@
+<style>
+    :root {
+        --fade-duration: 5s;
+        --fade-ease: ease-in-out;
+    }
+
+    .cbackground-shapes,
+    .cbackground-top-left,
+    .cbackground-top-right,
+    .cbackground-bottom-left,
+    .cbackground-bottom-right,
+    .cbackground-center {
+        animation: slowRotate 10s ease-in-out infinite alternate;
+    }
+
+    .cbackground-top-left,
+    .cbackground-top-right,
+    .cbackground-bottom-left,
+    .cbackground-bottom-right,
+    .cbackground-center {
+        backdrop-filter: blur(100px);
+    }
+
+    @keyframes slowRotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(180deg);
+        }
+    }
+</style>

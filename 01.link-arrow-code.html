@@ -1,0 +1,81 @@
+<style>
+    @keyframes linkArrowRightBounce {
+        0% {
+            transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+            transform: translate3d(10%, 0, 0);
+        }
+
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    @keyframes linkArrowLeftBounce {
+        0% {
+            transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+            transform: translate3d(-10%, 0, 0);
+        }
+
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    .link-arrow-decor {
+        transition: width 150ms ease-in-out, margin 150ms ease-in-out;
+    }
+
+    .link-arrow-decor:not(.link-arrow-decor-dropdown) {
+        width: 0;
+    }
+
+    .link-arrow-decor-dropdown {
+        width: 1.25rem;
+        margin-left: 3px;
+    }
+
+    .link-arrow:hover .link-arrow-decor:not(.link-arrow-decor-dropdown) {
+        width: 1.25rem;
+        margin: 0 3px;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const linkArrow = document.querySelectorAll(".link-arrow");
+        if (linkArrow.length) {
+            linkArrow.forEach(menuItem => {
+                const textMain = menuItem.querySelector(".link-arrow-main-part");
+                const textLast = menuItem.querySelector(".link-arrow-last-part");
+
+                if (!textMain || !textLast) return;
+
+                menuItem.addEventListener("mouseenter", () => handleMouseEnter(textMain, textLast));
+                menuItem.addEventListener("mouseleave", () => handleMouseLeave(textMain, textLast));
+            });
+
+            function handleMouseEnter(textMain, textLast) {
+                restartAnimation(textMain, "linkArrowLeftBounce 300ms ease-in-out");
+                restartAnimation(textLast, "linkArrowRightBounce 300ms ease-in-out");
+            }
+
+            function handleMouseLeave(textMain, textLast) {
+                restartAnimation(textMain, "linkArrowRightBounce 300ms ease-in-out");
+                restartAnimation(textLast, "linkArrowLeftBounce 300ms ease-in-out");
+            }
+
+            function restartAnimation(element, animation) {
+                element.style.animation = "none";
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => element.style.animation = animation);
+                });
+            }
+        };
+    });
+</script>

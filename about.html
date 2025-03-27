@@ -1,0 +1,177 @@
+<style>
+    :root {
+        --scrollbar-width: 0px;
+        --grid-columns: 12;
+        --grid-gutter: 15px;
+        --grid-margin: 2rem;
+        --grid-width: calc(100vw - (2 * var(--grid-margin)) - var(--scrollbar-width));
+        --grid-column-width: calc((var(--grid-width) - ((var(--grid-columns) - 1) * var(--grid-gutter))) / var(--grid-columns));
+        --team-margin: 0
+    }
+
+    @media (max-width:768px) {
+        :root {
+            --grid-margin: 1.5rem
+        }
+    }
+
+    .about-team-wrapper {
+        padding: var(--grid-margin)
+    }
+
+    .about-team {
+        aspect-ratio: 1000/519;
+        transform-origin: 0 100%;
+        will-change: transform;
+        border-radius: 8px
+    }
+
+    .about-paragraph-wrapper {
+        padding: 0 var(--grid-margin);
+        margin: 50vh 0 0
+    }
+
+    .about-paragraph-wrapper .word:first-child span {
+        text-indent: calc(calc((4*var(--grid-column-width)) + (4 - 1)*var(--grid-gutter)) + var(--grid-gutter))
+    }
+
+    .about-paragraph-wrapper .word {
+        position: relative;
+        overflow: hidden;
+        margin: -.1em 0
+    }
+
+    .about-paragraph-wrapper .word span {
+        transform: translate(0, 100%);
+        will-change: transform;
+        display: block;
+    }
+
+    .about-paragraph-wrapper .word {
+        display: inline-block
+    }
+
+    .rule12 {
+        width: calc((12*var(--grid-column-width)) + (12 - 1)*var(--grid-gutter))
+    }
+
+    .rule3 {
+        width: calc((3*var(--grid-column-width)) + (3 - 1)*var(--grid-gutter))
+    }
+
+    @media (max-width:768px) {
+        .about-team-wrapper {
+            padding: calc(2*var(--grid-margin))0
+        }
+
+        .about-paragraph-wrapper {
+            margin: 0
+        }
+
+        .about-paragraph-wrapper .word:first-child span {
+            text-indent: 0
+        }
+    }
+
+    @media screen and (min-width: 767px) {
+        .about-paragraph {
+            margin-top: var(--team-margin);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        gsap.registerPlugin(ScrollTrigger);
+
+        const lenis = new Lenis({
+            smooth: true,
+            lerp: 0.1
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        lenis.on("scroll", ScrollTrigger.update);
+
+        ScrollTrigger.scrollerProxy(document.body, {
+            scrollTop(value) {
+                return arguments.length ? lenis.scrollTo(value, { immediate: true }) : lenis.scroll;
+            },
+            getBoundingClientRect() {
+                return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+            },
+            pinType: document.body.style.transform ? "transform" : "fixed"
+        });
+
+        const mm = gsap.matchMedia();
+        const aboutTeam = document.querySelector(".about-team");
+        const aboutParagraph = document.querySelector(".about-paragraph");
+        const rule3 = document.querySelector(".rule3");
+        const rule12 = document.querySelector(".rule12");
+
+        mm.add("(min-width: 769px)", () => {
+            if (rule3 && rule12 && aboutTeam) {
+                gsap.to(aboutTeam, {
+                    scale: rule3.clientWidth / rule12.clientWidth,
+                    y: 0.5 * window.innerHeight + 28 + 0.543 * rule3.clientWidth,
+                    immediateRender: false,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: aboutTeam,
+                        start: "bottom bottom-=25",
+                        end: "bottom top",
+                        scrub: true,
+                        invalidateOnRefresh: true,
+                        scroller: document.body
+                    }
+                });
+            }
+        });
+
+        // Animation effect on words in aboutParagraph
+        if (aboutParagraph) {
+            const words = aboutParagraph.textContent.split(/\s+/);
+            aboutParagraph.innerHTML = words.map(word =>
+                `<span class="word">
+                        <span>${word}</span>
+                    </span>`
+            ).join(" ");
+
+            aboutParagraph.querySelectorAll(".word").forEach((word) => {
+                gsap.to(word.querySelector('span'), {
+                    y: 0,
+                    ease: "power4.out",
+                    duration: 0.5,
+                    scrollTrigger: {
+                        trigger: word,
+                        toggleActions: "play play reverse reverse",
+                        start: "top 75%",
+                        end: "+=1",
+                        scroller: document.body
+                    }
+                });
+            });
+        }
+
+        // Detect the height of the first .word and the height of the video
+        const firstWord = aboutParagraph?.querySelector(".word");
+        const firstWordHeight = firstWord ? firstWord.clientHeight : 0;
+        const aboutTeamHeight = aboutTeam ? aboutTeam.clientHeight : 0;
+
+        // Calculate and assign the value to --video-margin
+        if (rule3 && aboutTeam) {
+            const aboutTeamMarginValue = 0.543 * rule3.clientWidth - 23 - 0.65 * firstWordHeight;
+            document.documentElement.style.setProperty("--team-margin", `${aboutTeamMarginValue}px`);
+        }
+
+        ScrollTrigger.refresh();
+
+        window.addEventListener("resize", () => {
+            ScrollTrigger.refresh();
+        });
+    });
+</script>

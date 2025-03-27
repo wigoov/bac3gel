@@ -1,0 +1,84 @@
+<div class="button-submit-icon-svg-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" width="35" height="35" viewBox="0 0 35 35"
+        class="button-submit-icon-svg">
+        <g>
+            <rect fill="none" x="0" y="0" width="35" height="35" rx="17.5" ry="17.5" />
+            <g>
+                <polyline fill="none" stroke-miterlimit="10" stroke="currentColor" stroke-width="0.92"
+                    points="17.5 7.5, 27.5 17.5, 17.5 27.5" />
+                <line fill="none" stroke-miterlimit="10" stroke="currentColor" stroke-width="0.92" x1="7.5" y1="17.5"
+                    x2="27.5" y2="17.5" />
+            </g>
+        </g>
+    </svg>
+</div>
+
+<div class="button-submit-icon-svg-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" width="35" height="35" viewBox="0 0 35 35"
+        class="button-submit-icon-svg button-submit-icon-svg-rotate-minus90">
+        <g>
+            <rect fill="none" x="0" y="0" width="35" height="35" rx="17.5" ry="17.5" />
+            <g>
+                <polyline fill="none" stroke-miterlimit="10" stroke="currentColor" stroke-width="0.92"
+                    points="17.5 7.5, 27.5 17.5, 17.5 27.5" />
+                <line fill="none" stroke-miterlimit="10" stroke="currentColor" stroke-width="0.92" x1="7.5" y1="17.5"
+                    x2="27.5" y2="17.5" />
+            </g>
+        </g>
+    </svg>
+</div>
+
+<style>
+    .button-submit-icon-svg-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 35px;
+        height: 35px;
+    }
+
+    .button-submit-icon-svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform: none;
+    }
+
+    .button-submit-icon-svg-rotate-minus90 {
+        transform: rotate(-90deg);
+    }
+
+    .button-submit-icon-svg-rotate-minus45 {
+        transform: rotate(-45deg);
+    }
+
+    .button-submit-icon {
+        transition: width 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .button-submit-icon:first-child {
+        width: 35px;
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .button-submit-icon:last-child {
+        width: 0;
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    [data-button-submit-icon-parent-hover]:hover .button-submit-icon:first-child,
+    .button-submit:hover .button-submit-icon:first-child {
+        width: 0;
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    [data-button-submit-icon-parent-hover]:hover .button-submit-icon:last-child,
+    .button-submit:hover .button-submit-icon:last-child {
+        width: 35px;
+        transform: scale(1);
+        opacity: 1;
+    }
+</style>

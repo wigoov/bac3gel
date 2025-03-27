@@ -1,0 +1,38 @@
+<style>
+    .mobile-menu-icon.open {
+        background-color: #fff3;
+    }
+
+    .mobile-menu.open>div {
+        transform: none;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all elements with data-open-menu
+        const triggers = document.querySelectorAll("[data-open-menu]");
+
+        triggers.forEach(trigger => {
+            const menuId = trigger.getAttribute("data-open-menu");
+            const menu = document.querySelector(menuId);
+
+            // Validate that the menu exists before proceeding
+            if (!menu) return;
+
+            trigger.addEventListener("click", (event) => {
+                // Toggle the "open" class on both elements
+                trigger.classList.toggle("open");
+                menu.classList.toggle("open");
+            });
+
+            // Close menu if clicking outside of it
+            document.addEventListener("click", (event) => {
+                if (!menu.contains(event.target) && !trigger.contains(event.target)) {
+                    trigger.classList.remove("open");
+                    menu.classList.remove("open");
+                }
+            });
+        });
+    });
+</script>

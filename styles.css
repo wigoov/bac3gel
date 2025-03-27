@@ -29,9 +29,15 @@
 }
 
 .accordion.is-active .accordion-title-icon {
-    transform: translateY(-50%) rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
 .accordion.is-active .accordion-foot {
     height: auto;
 }
+
+
+
+
+
+

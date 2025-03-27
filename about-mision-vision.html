@@ -1,0 +1,89 @@
+<style>
+    .mwg_effect006 {
+        letter-spacing: -0.03em;
+        overflow: hidden;
+    }
+
+    .mwg_effect006 .pin-height {
+        height: 400vh;
+    }
+
+    .mwg_effect006 .pin-container {
+        height: 100vh;
+        align-items: center;
+        padding: 0 3vw;
+        column-gap: 15px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mwg_effect006 .pin-paragraph:not(:first-child) {
+        position: absolute;
+        top: 0;
+    }
+
+    .mwg_effect006 .word {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        margin: -0.14em 0;
+    }
+
+    .mwg_effect006 .word span {
+        display: block;
+        padding: 0.14em 0;
+    }
+
+    .mwg_effect006 .pin-paragraph:not(:first-child) .word span {
+        transform: translate(0, -100%);
+    }
+</style>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger)
+
+    window.addEventListener("DOMContentLoaded", () => {
+        const root = document.querySelector('.mwg_effect006')
+        const paragraphs = root.querySelectorAll('.pin-paragraph')
+        const pinHeight = root.querySelector('.pin-height')
+        const container = root.querySelector('.pin-container')
+
+        paragraphs.forEach(paragraph => {
+            wrapWordsInSpan(paragraph)
+        })
+
+        ScrollTrigger.create({
+            trigger: pinHeight,  // Listening to pinHeight
+            start: 'top top',
+            end: 'bottom bottom',
+            pin: container, // The pinned section
+            scrub: true // Syncs with scrolling
+        })
+
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: pinHeight,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true // progresses with the scroll
+            }
+        })
+
+        paragraphs.forEach((paragraph, index) => {
+            tl.to(paragraphs[index].querySelectorAll('.word span'), {
+                y: '100%', // Hiding words of paragraphs[index]
+                stagger: 0.2,
+                duration: 1,
+                ease: 'power4.in',
+            })
+            tl.to(paragraphs[index + 1].querySelectorAll('.word span'), {
+                y: '0%', // Revealing words of paragraphs[index+1]
+                duration: 1,
+                delay: 1.4,
+                stagger: 0.2,
+                ease: 'power4.out',
+            }, '<') // Means that the animation starts at the same time as the previous tween
+        })
+    })
+</script>
