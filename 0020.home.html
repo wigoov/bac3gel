@@ -23,7 +23,7 @@
                     start: "top 90%",
                     end: "+=75%",
                     scrub: 2,
-                    // markers: true,
+                    // markers: true, // Uncomment to enable markers for debugging
                 },
             });
 
@@ -43,9 +43,9 @@
 
         elements.forEach((element) => {
             let direction = element.getAttribute("data-gsap-fade-slide-dir");
-            let xValue = "0%", yValue = "0%"; // Valores por defecto
+            let xValue = "0%", yValue = "0%"; // Default values
 
-            // Configurar desplazamiento según la dirección
+            // Configure displacement based on direction
             switch (direction) {
                 case "left":
                     xValue = "-100%";
@@ -63,11 +63,11 @@
 
             gsap.fromTo(
                 element,
-                { x: xValue, y: yValue, opacity: 0.2 }, // Inicio con desplazamiento y baja opacidad
+                { x: xValue, y: yValue, opacity: 0.2 }, // Start with displacement and low opacity
                 {
                     x: "0%",
                     y: "0%",
-                    opacity: 1, // Termina en posición normal y visible
+                    opacity: 1, // End in normal position and fully visible
                     duration: 1.2,
                     ease: "power2.out",
                     scrollTrigger: {
@@ -75,13 +75,13 @@
                         start: "top 90%",
                         end: "top 50%",
                         scrub: 2,
-                        // markers: true, // Activa los markers para ajustar la animación
+                        // markers: true, // Enable markers to adjust the animation
                     },
                 }
             );
         });
 
-        // Ocultar "Div Block 13" si el usuario retrocede en el scroll
+        // Hide "Div Block 13" if the user scrolls back up
         let hideTarget = document.querySelector(".Div-Block-13");
 
         if (hideTarget) {
@@ -91,7 +91,7 @@
                 end: "top 20%",
                 onEnterBack: () => gsap.to(hideTarget, { opacity: 0, duration: 0.5 }),
                 onLeave: () => gsap.to(hideTarget, { opacity: 1, duration: 0.5 }),
-                // markers: true, // Para visualizar los puntos de activación
+                // markers: true, // Uncomment to visualize activation points
             });
         }
     }
