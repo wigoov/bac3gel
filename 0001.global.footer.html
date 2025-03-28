@@ -1,6 +1,63 @@
-<script id="elaltillo-global-accordion-script" type="text/javascript">
-    document.addEventListener("DOMContentLoaded", () => {
-        const accordions = document.querySelectorAll(".accordion-item");
+<script id="elaltillo-global-functions">
+    /**
+     * 1. Lenis           = elaltilloGlobalLenisInit
+     * {}
+     * 
+     * 2. Accordion       = elaltilloGlobalAccordionInit
+     * {accordionSelector, headSelector, onlyOne, onAccordionClic}
+     * 
+     * 3. Dropdown        = elaltilloGlobalDropdownInit
+     * {dropdownSelector, buttonSelector, menuSelector}
+     * 
+     * 4. ClickableLinks  = elaltilloGlobalClickableLinksInit
+     * {elementsSelector}
+     * 
+     * 5. HeaderHeight    = elaltilloGlobalUpdateHeaderHeight
+     * {}
+     * 
+     * 6. WrapWordsInSpan = elaltilloGlobalWrapWordsInSpan
+     * {element, chars}
+     * 
+     */
+
+    // Lenis
+    function elaltilloGlobalLenisInit() {
+        function initLenisScrollTrigger() {
+            lenis.on("scroll", () => {
+                ScrollTrigger.update();
+            });
+
+            ScrollTrigger.addEventListener("refresh", () => lenis.update());
+
+            window.addEventListener("resize", () => {
+                lenis.update();
+                ScrollTrigger.refresh();
+            });
+        }
+
+        const lenis = new Lenis({
+            lerp: 0.1,
+            smoothWheel: true,
+            infinite: false,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+        initLenisScrollTrigger();
+    }
+
+    // Accordion
+    function elaltilloGlobalAccordionInit({
+        accordionSelector = '.accordion-item',
+        headSelector = '.accordion-head',
+        onlyOne = true,
+        onAccordionClick = null,
+    }) {
+        const accordions = document.querySelectorAll(accordionSelector);
 
         // Guard clause to ensure there are accordion items
         if (!accordions.length) {
@@ -8,8 +65,7 @@
             return;
         }
 
-        function toggleAccordion(accordion, onlyOne = true) {
-            // Guard clause for invalid accordion element
+        function toggleAccordion(accordion) {
             if (!accordion) {
                 console.error("Invalid accordion element.");
                 return;
@@ -17,92 +73,109 @@
 
             const isOpen = accordion.classList.contains("open");
 
-            // Only close other accordions if `onlyOne` is true
             if (onlyOne) {
                 accordions.forEach(item => {
                     if (item !== accordion) {
-                        item.classList.remove("open"); // Close other accordions
+                        item.classList.remove("open");
                     }
                 });
             }
 
-            // Toggle the current accordion
             if (isOpen) {
                 accordion.classList.remove("open");
             } else {
                 accordion.classList.add("open");
             }
 
-            // Get the header position for the current accordion
-            const header = accordion.querySelector(".accordion-head");
-            if (header) {
-                // Update the --header-height CSS variable to match the clicked header
-                const headerHeight = header.offsetHeight;
-                document.documentElement.style.setProperty("--header-height", `${headerHeight}px`);
+            const headerHeightCSS = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
+            const headerHeightValue = parseFloat(headerHeightCSS);
 
-                // Get the value of --header-height from CSS
-                const headerHeightCSS = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
+            setTimeout(() => {
+                window.scrollTo({
+                    top: header.getBoundingClientRect().top + window.scrollY - headerHeightValue,
+                    behavior: "smooth"
+                });
+            }, 200);
 
-                // Convert the CSS value to a number
-                const headerHeightValue = parseFloat(headerHeightCSS);
-
-                // Wait for 200ms and then move the content up
-                setTimeout(() => {
-                    // Scroll the content to the top using the header height from the CSS variable
-                    window.scrollTo({
-                        top: header.getBoundingClientRect().top + window.scrollY - headerHeightValue,
-                        behavior: "smooth"
-                    });
-                }, 200);
+            // Execute the optional callback if provided
+            if (onAccordionClick && typeof onAccordionClick === 'function') {
+                onAccordionClick(accordion);
             }
         }
 
-        // Attach event listeners to each accordion header
+        // Add click event listener to each accordion item to toggle its state
         accordions.forEach(accordion => {
-            const head = accordion.querySelector(".accordion-head");
-
-            // Ensure the accordion header exists
-            if (!head) {
-                console.error("Accordion head not found for:", accordion);
-                return;
+            const header = accordion.querySelector(headSelector);
+            if (header) {
+                header.addEventListener("click", () => toggleAccordion(accordion));
             }
-
-            head.addEventListener("click", () => {
-                toggleAccordion(accordion);
-            });
         });
-    });
-</script>
+    }
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const dropdown = document.querySelector("#dropdown-header-products");
+    // Dropdown
+    function elaltilloGlobalDropdownInit({
+        dropdownSelector = '#dropdown-header-products',
+        buttonSelector = '#dropdown-header-products-button',
+        menuSelector = '#dropdown-header-products-menu'
+    }) {
+        const dropdown = document.querySelector(dropdownSelector);
         if (!dropdown) return;
 
-        const button = document.querySelector("#dropdown-header-products-button");
-        const menu = document.querySelector("#dropdown-header-products-menu");
+        const button = document.querySelector(buttonSelector);
+        const menu = document.querySelector(menuSelector);
 
         if (!button || !menu) return;
 
+        // Show the menu on hover
         dropdown.addEventListener("mouseover", function () {
             button.classList.add("is-active");
             menu.classList.add("is-active");
         });
 
+        // Hide the menu when mouse leaves
         dropdown.addEventListener("mouseleave", function () {
             button.classList.remove("is-active");
             menu.classList.remove("is-active");
         });
 
+        // Toggle the menu on click
         dropdown.addEventListener("click", function (event) {
             event.preventDefault();
             button.classList.toggle("is-active");
             menu.classList.toggle("is-active");
         });
-    });
+    }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const elements = document.querySelectorAll("[data-url]");
+    // ClickableLinks
+    function elaltilloGlobalClickableLinksInit({ elementsSelector = '[data-url]' }) {
+        const normalizePath = (path) => {
+            path = path.replace(/^\/+|\/+$/g, ""); // Remove leading/trailing slashes
+            return `/${path}`;
+        };
+
+        const isValidURL = (url) => {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        };
+
+        const openLink = (url, target, rel) => {
+            if (!url) return;
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = target;
+            if (rel) link.rel = rel;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        const elements = document.querySelectorAll(elementsSelector);
         if (!elements.length) return;
 
         elements.forEach(element => {
@@ -139,48 +212,29 @@
                 if (event.key === "Enter") openLink(finalURL, target, rel);
             });
         });
-    });
-
-    /**
-     * Normalizes a path to prevent double slashes and ensures it starts with "/".
-     * @param {string} path
-     * @returns {string}
-     */
-    function normalizePath(path) {
-        path = path.replace(/^\/+|\/+$/g, ""); // Remove leading/trailing slashes
-        return `/${path}`;
     }
 
-    /**
-     * Validates if a string is a valid URL.
-     * @param {string} url
-     * @returns {boolean}
-     */
-    function isValidURL(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch {
-            return false;
-        }
+    // HeaderHeight
+    function elaltilloGlobalUpdateHeaderHeight() {
+        const headerHeightCSS = getComputedStyle(document.documentElement).getPropertyValue("--header-height");
+        return parseFloat(headerHeightCSS);
     }
 
-    /**
-     * Opens a URL with the specified attributes.
-     * @param {string} url
-     * @param {string} target
-     * @param {string|null} rel
-     */
-    function openLink(url, target, rel) {
-        if (!url) return;
+    // WrapWordsInSpan
+    function elaltilloGlobalWrapWordsInSpan({ element, chars = false }) {
+        const text = element.textContent;
 
-        const link = document.createElement("a");
-        link.href = url;
-        link.target = target;
-        if (rel) link.rel = rel;
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        element.innerHTML = text
+            .split(' ')
+            .map(word => {
+                if (chars) {
+                    // Split each word into characters and wrap each one in a <span>
+                    return `<span class="word">${word.split('').map(char => `<span class="char">${char}</span>`).join('')}</span>`;
+                } else {
+                    // Just wrap the word in a <span>
+                    return `<span class="word"><span>${word}</span></span>`;
+                }
+            })
+            .join(' ');
     }
 </script>
